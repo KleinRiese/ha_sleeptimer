@@ -1,0 +1,9 @@
+set_timeout:
+  description: Set the timeout for the SleepTimer.
+  fields:
+    entity_id:
+      description: The entity ID of the SleepTimer.
+      example: switch.sleeptimer
+    timeout:
+      description: The timeout in seconds.
+      example: 300
