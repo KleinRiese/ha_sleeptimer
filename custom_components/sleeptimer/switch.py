@@ -11,12 +11,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entity_id = config_entry.data[CONF_ENTITY_ID]
     timeout = config_entry.data.get(CONF_TIMEOUT, 600)
 
-    async_add_entities([SleepTimerSwitch(hass, name, entity_id, timeout)])
+    # Generate a unique ID based on the name
+    unique_id = f"sleeptimer_{name.lower().replace(' ', '_')}"
+
+    async_add_entities([SleepTimerSwitch(hass, name, entity_id, timeout, unique_id)])
 
 class SleepTimerSwitch(SwitchEntity):
     """Representation of a SleepTimer switch."""
 
-    def __init__(self, hass, name, entity_id, timeout):
+    def __init__(self, hass, name, entity_id, timeout, unique_id):
         """Initialize the switch."""
         self._hass = hass
         self._name = name
@@ -24,6 +27,7 @@ class SleepTimerSwitch(SwitchEntity):
         self._timeout = timeout
         self._is_on = False
         self._timer = None
+        self._unique_id = unique_id
 
     @property
     def name(self):
@@ -35,12 +39,16 @@ class SleepTimerSwitch(SwitchEntity):
         """Return true if the switch is on."""
         return self._is_on
 
+    @property
+    def unique_id(self):
+        """Return a unique ID for the switch."""
+        return self._unique_id
+
     async def async_turn_on(self, **kwargs):
         """Turn on the switch and start the timer."""
         self._is_on = True
         self.async_write_ha_state()
 
-        # Turn on the target entity
         await self._hass.services.async_call(
             "homeassistant",
             "turn_on",
@@ -56,7 +64,6 @@ class SleepTimerSwitch(SwitchEntity):
         self._is_on = False
         self.async_write_ha_state()
 
-        # Turn off the target entity
         await self._hass.services.async_call(
             "homeassistant",
             "turn_off",
@@ -74,7 +81,6 @@ class SleepTimerSwitch(SwitchEntity):
         self._is_on = False
         self.async_write_ha_state()
 
-        # Turn off the target entity
         await self._hass.services.async_call(
             "homeassistant",
             "turn_off",
