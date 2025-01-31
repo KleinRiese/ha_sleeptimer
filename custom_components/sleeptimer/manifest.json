@@ -2,9 +2,9 @@
   "domain": "sleeptimer",
   "name": "SleepTimer",
   "version": "1.0",
-  "documentation": "https://www.example.com",
+  "documentation": "https://github.com/KleinRiese/ha_sleeptimer",
   "dependencies": [],
-  "codeowners": ["@your_github_username"],
+  "codeowners": ["@KleinRiese"],
   "requirements": [],
   "iot_class": "local_polling",
   "config_flow": true

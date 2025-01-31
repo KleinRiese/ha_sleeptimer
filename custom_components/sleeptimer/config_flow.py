@@ -25,9 +25,9 @@ class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                vol.Required(CONF_ENTITY_ID): cv.entity_id,
-                vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
+                vol.Required(CONF_ENTITY_ID): str,
+                vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(int, vol.Range(min=1)),
             }),
             errors=errors,
         )
@@ -57,6 +57,6 @@ class SleepTimerOptionsFlow(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
-                vol.Optional(CONF_TIMEOUT, default=self.config_entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                vol.Optional(CONF_TIMEOUT, default=self.config_entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)): vol.All(int, vol.Range(min=1)),
             }),
         )
