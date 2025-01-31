@@ -41,7 +41,12 @@ class SleepTimerSwitch(SwitchEntity):
         self.async_write_ha_state()
 
         # Turn on the target entity
-        await self._hass.services.async_call("switch", "turn_on", {"entity_id": self._entity_id})
+        await self._hass.services.async_call(
+            "homeassistant",
+            "turn_on",
+            {"entity_id": self._entity_id},
+            blocking=True,
+        )
 
         # Start the timer
         self._timer = async_call_later(self._hass, self._timeout, self._handle_timeout)
@@ -52,7 +57,12 @@ class SleepTimerSwitch(SwitchEntity):
         self.async_write_ha_state()
 
         # Turn off the target entity
-        await self._hass.services.async_call("switch", "turn_off", {"entity_id": self._entity_id})
+        await self._hass.services.async_call(
+            "homeassistant",
+            "turn_off",
+            {"entity_id": self._entity_id},
+            blocking=True,
+        )
 
         # Cancel the timer
         if self._timer:
@@ -65,7 +75,12 @@ class SleepTimerSwitch(SwitchEntity):
         self.async_write_ha_state()
 
         # Turn off the target entity
-        await self._hass.services.async_call("switch", "turn_off", {"entity_id": self._entity_id})
+        await self._hass.services.async_call(
+            "homeassistant",
+            "turn_off",
+            {"entity_id": self._entity_id},
+            blocking=True,
+        )
 
         # Clear the timer
         self._timer = None
