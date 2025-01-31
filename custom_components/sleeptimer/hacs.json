@@ -3,5 +3,6 @@
     "render_readme": true,
     "domains": ["switch"],
     "homeassistant": "2024.1.0",
-    "iot_class": "local_polling"
+    "iot_class": "local_polling",
+    "icon": "icon.png"
   }
