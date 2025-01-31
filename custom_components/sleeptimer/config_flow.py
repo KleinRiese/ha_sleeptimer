@@ -2,7 +2,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
-from .const import DOMAIN, DEFAULT_NAME, DEFAULT_TIMEOUT
+from .const import DOMAIN, DEFAULT_NAME, DEFAULT_TIMEOUT, CONF_NAME, CONF_ENTITY_ID, CONF_TIMEOUT
 
 class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for SleepTimer."""
@@ -15,8 +15,10 @@ class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            # Validate the input
-            if not errors:
+            # Check if the entity ID is valid
+            if not await self._validate_entity_id(user_input[CONF_ENTITY_ID]):
+                errors["base"] = "invalid_entity_id"
+            else:
                 return self.async_create_entry(title=user_input[CONF_NAME], data=user_input)
 
         # Show the configuration form
@@ -24,11 +26,15 @@ class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                vol.Required("entity_id"): cv.entity_id,
+                vol.Required(CONF_ENTITY_ID): cv.entity_id,
                 vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(vol.Coerce(int), vol.Range(min=1)),
             }),
             errors=errors,
         )
+
+    async def _validate_entity_id(self, entity_id):
+        """Validate that the entity ID exists."""
+        return self.hass.states.get(entity_id) is not None
 
     @staticmethod
     @callback
