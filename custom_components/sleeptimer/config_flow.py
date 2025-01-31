@@ -2,7 +2,6 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 from .const import DOMAIN, DEFAULT_NAME, DEFAULT_TIMEOUT, CONF_NAME, CONF_ENTITY_ID, CONF_TIMEOUT
 
 class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -22,20 +21,12 @@ class SleepTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 return self.async_create_entry(title=user_input[CONF_NAME], data=user_input)
 
-        # Get all available entities
-        entity_registry = async_get_entity_registry(self.hass)
-        entities = [
-            entity.entity_id
-            for entity in entity_registry.entities.values()
-            if entity.disabled_by is None  # Only include enabled entities
-        ]
-
         # Show the configuration form
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
-                vol.Required(CONF_ENTITY_ID): vol.In(entities),  # Dropdown with all entities
+                vol.Required(CONF_ENTITY_ID): str,
                 vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(int, vol.Range(min=1)),
             }),
             errors=errors,
