@@ -9,6 +9,7 @@ A Home Assistant integration that provides a sleep timer for any entity.
 
 ## Installation
 1. Add this integration via HACS.
+2. Setup a custom Repositori
 2. Go to **Settings > Integrations** and add the SleepTimer integration.
 3. Configure the virtual entity via the user interface.
 
